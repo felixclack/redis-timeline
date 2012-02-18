@@ -1,7 +1,7 @@
 require 'redis/namespace'
 
 module Timeline
-  class << self
+  module Config
 
     # Accepts:
     #   1. A 'hostname:port' String
