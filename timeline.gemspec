@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = Timeline::VERSION
   s.authors     = ["Felix Clack"]
   s.email       = ["felixclack@gmail.com"]
-  s.homepage    = "http://timeline.github.com"
+  s.homepage    = "http://felixclack.github.com/timeline"
   s.summary     = "Redis backed timeline for your activity feeds."
   s.description = ""
 
