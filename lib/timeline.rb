@@ -1,7 +1,14 @@
+require 'active_support'
+require 'multi_json'
+require 'hashie'
 require 'timeline/config'
+require 'timeline/helpers'
 require 'timeline/track'
+require 'timeline/actor'
+require 'timeline/activity'
 
 module Timeline
-  extend Timeline::Config
+  extend Config
+  extend Helpers
 end
 
