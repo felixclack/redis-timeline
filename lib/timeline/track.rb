@@ -8,6 +8,7 @@ module Timeline::Track
       @callback ||= :create
       @actor = options.delete :actor
       @subject = options.delete :subject
+      @target = options.delete :target
 
       method_name = "track_#{@name}_after_#{@callback}".to_sym
       define_activity_method method_name
@@ -19,28 +20,30 @@ module Timeline::Track
       def define_activity_method(method_name)
         define_method method_name do
           actor = !@actor.nil? ? send(@actor) : creator
-          subject = !@subject.nil? ? send(@subject.to_sym) : self
-          add_activity self.activity(@name, actor, subject)
+          object = !@object.nil? ? send(@object.to_sym) : self
+          target = !@target.nil? ? send(@target.to_sym) : nil
+          add_activity self.activity(verb: @name, actor: actor, object: object, target: target)
         end
       end
   end
 
   protected
-    def activity(name, actor, subject)
+    def activity(options={})
       {
-        activity_type: name,
+        verb: options[:verb],
         actor: {
-          actor_id: actor.id,
-          actor_class: actor.class.to_s,
-          url: actor.to_param,
-          title: actor.to_s
+          id: options[:actor].id,
+          class: options[:actor].class.to_s,
+          url: options[:actor].to_param,
+          display_name: options[:actor].to_s
         },
-        subject: {
-          subject_id: subject.id,
-          subject_class: subject.class.to_s,
-          url: subject.to_param,
-          title: subject.to_s
-        }
+        object: {
+          id: options[:object].id,
+          class: options[:object].class.to_s,
+          url: options[:object].to_param,
+          display_name: options[:object].to_s
+        },
+        target: options_for_target(options[:target])
       }
     end
 
@@ -51,5 +54,18 @@ module Timeline::Track
 
     def redis_add(list, activity_item)
       Timeline.redis.lpush list, Timeline.encode(activity_item)
+    end
+
+    def options_for_target(target)
+      if !target.nil?
+        {
+          id: target.id,
+          class: target.class.to_s,
+          url: target.to_param,
+          display_name: target.to_s
+        }
+      else
+        nil
+      end
     end
 end

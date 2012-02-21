@@ -49,7 +49,7 @@ describe Timeline::Track do
   let(:creator) { User.new(id: 1) }
   let(:post) { Post.new(creator_id: creator.id, name: "New post") }
 
-  describe "included in an AR class" do
+  describe "included in an ActiveModel-compliant class" do
     it "tracks on create by default" do
       post.should_receive(:track_new_post_after_create)
       post.save

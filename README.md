@@ -6,22 +6,52 @@ Redis backed timelines in your app.
 Features
 --------
 
-* FIXME (list of features and unsolved problems)
+* store your timeline in Redis.
 
 Examples
 --------
 
-    FIXME (code sample of usage)
+The simple way...
+
+    class Post < ActiveRecord::Base
+      track :new_post
+    end
+
+By default, track fires in the `after_create` callback of your model and uses `self` as the object and `creator` as the actor.
+
+You can specify these options explicity...
+
+    class Comment < ActiveRecord::Base
+      belongs_to :author, class_name: "User"
+      belongs_to :post
+
+      track :new_comment, actor: :author, target: :post
+    end
 
 Requirements
 ------------
 
-* FIXME (list of requirements)
+* redis
+* active_support
 
 Install
 -------
 
-* FIXME (sudo gem install, anything else)
+Install redis.
+
+Add to your Gemfile:
+
+    gem 'timeline'
+
+Or install it by hand:
+
+    gem install timeline
+
+Setup your redis instance. For a Rails app, something like this...
+
+    # in config/initializers/redis.rb
+
+    Timeline.redis = "localhost:9736"
 
 Author
 ------
@@ -31,9 +61,9 @@ Original author: Felix Clack
 License
 -------
 
-(The MIT License) FIXME (different license?)
+(The MIT License)
 
-Copyright (c) 2012 FIXME (author's name)
+Copyright (c) 2012 Felix Clack
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
