@@ -1,9 +1,4 @@
 module Timeline
-  class Activity
-    # include Hashie::Extensions::MethodAccess
-
-    def initialize(options={})
-      Timeline.decode options
-    end
+  class Activity < Hashie::Mash
   end
 end

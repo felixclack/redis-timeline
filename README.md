@@ -14,7 +14,10 @@ Examples
 The simple way...
 
     class Post < ActiveRecord::Base
+      include Timeline::Track
+
       track :new_post
+
     end
 
 By default, track fires in the `after_create` callback of your model and uses `self` as the object and `creator` as the actor.
@@ -22,17 +25,64 @@ By default, track fires in the `after_create` callback of your model and uses `s
 You can specify these options explicity...
 
     class Comment < ActiveRecord::Base
+      include Timeline::Track
       belongs_to :author, class_name: "User"
       belongs_to :post
 
-      track :new_comment, actor: :author, target: :post
+      track :new_comment,
+        on: :update,
+        actor: :author,
+        target: :post,
+        followers: :post_participants
+
+      delegate :participants, to: :post, prefix: true
     end
+
+Parameters
+----------
+
+`track` accepts the following parameters...
+
+the first param is the verb name.
+
+The rest all fit neatly in an options hash.
+
+* `on:` [ActiveModel callback]
+  You use it to specify whether you want the timeline activity created after a create, update or destroy.
+  Default: :create
+
+* `actor:` [the method that specifies the object that took this action]
+  In the above example, comment.author is this object.
+  Default: :creator, so make sure this exists if you don't specify a method here
+
+* `object:` defaults to self, which is good most of the time.
+  You can override it if you need to
+
+* `target:` [related to the `:object` method above. In the example this is the post related to the comment]
+  default: nil
+
+* `if:` symbol or proc/lambda lets you put conditions on when to track.
+
+Display a timeline
+------------------
+
+To retrieve a timeline for a user...
+
+    class User < ActiveRecord::Base
+      include Timeline::Actor
+    end
+
+The timeline objects are just hashes that are extended by [Hashie](http://github.com/intridea/hashie) to provide method access to the keys.
+
+    user = User.find(1)
+    user.timeline # => [<Timeline::Activity verb='new_comment' ...>]
 
 Requirements
 ------------
 
 * redis
 * active_support
+* hashie
 
 Install
 -------
@@ -51,7 +101,7 @@ Setup your redis instance. For a Rails app, something like this...
 
     # in config/initializers/redis.rb
 
-    Timeline.redis = "localhost:9736"
+    Timeline.redis = "localhost:6379/timeline"
 
 Author
 ------

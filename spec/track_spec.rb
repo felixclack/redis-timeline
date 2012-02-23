@@ -56,18 +56,26 @@ describe Timeline::Track do
     end
 
     it "uses the creator as the actor by default" do
-      post.should_receive(:creator).and_return(mock("User", id: 1, to_param: "1"))
+      post.should_receive(:creator).and_return(mock("User", id: 1, to_param: "1", followers: []))
       post.save
     end
 
     it "adds the activity to the global timeline set" do
       post.save
-      creator.timeline(:global).first.should include(post.to_s)
+      creator.timeline(:global).last.should be_kind_of(Timeline::Activity)
     end
 
     it "adds the activity to the actor's timeline" do
       post.save
-      creator.timeline.last.should include(post.to_s)
+      creator.timeline.last.should be_kind_of(Timeline::Activity)
+    end
+
+    it "cc's the actor's followers by default" do
+      follower = User.new(id: 2)
+      User.any_instance.should_receive(:followers).and_return([follower])
+      post.save
+      follower.timeline.last.verb.should == "new_post"
+      follower.timeline.last.actor.id.should == 1
     end
   end
 end

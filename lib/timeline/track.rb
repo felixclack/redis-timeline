@@ -7,22 +7,27 @@ module Timeline::Track
       @callback = options.delete :on
       @callback ||= :create
       @actor = options.delete :actor
-      @subject = options.delete :subject
+      @actor ||= :creator
+      @object = options.delete :object
       @target = options.delete :target
+      @followers = options.delete :followers
+      @followers ||= :followers
+
 
       method_name = "track_#{@name}_after_#{@callback}".to_sym
-      define_activity_method method_name
+      define_activity_method method_name, actor: @actor, object: @object, target: @target, followers: @followers, verb: name
 
-      send "after_#{@callback}".to_sym, method_name
+      send "after_#{@callback}".to_sym, method_name, if: options.delete(:if)
     end
 
     private
-      def define_activity_method(method_name)
+      def define_activity_method(method_name, options={})
         define_method method_name do
-          actor = !@actor.nil? ? send(@actor) : creator
-          object = !@object.nil? ? send(@object.to_sym) : self
-          target = !@target.nil? ? send(@target.to_sym) : nil
-          add_activity self.activity(verb: @name, actor: actor, object: object, target: target)
+          actor = send(options[:actor])
+          object = !options[:object].nil? ? send(options[:object].to_sym) : self
+          target = !options[:target].nil? ? send(options[:target].to_sym) : nil
+          followers = actor.send(options[:followers].to_sym)
+          add_activity activity(verb: options[:verb], actor: actor, object: object, target: target), followers
         end
       end
   end
@@ -31,37 +36,35 @@ module Timeline::Track
     def activity(options={})
       {
         verb: options[:verb],
-        actor: {
-          id: options[:actor].id,
-          class: options[:actor].class.to_s,
-          url: options[:actor].to_param,
-          display_name: options[:actor].to_s
-        },
-        object: {
-          id: options[:object].id,
-          class: options[:object].class.to_s,
-          url: options[:object].to_param,
-          display_name: options[:object].to_s
-        },
-        target: options_for_target(options[:target])
+        actor: options_for(options[:actor]),
+        object: options_for(options[:object]),
+        target: options_for(options[:target])
       }
     end
 
-    def add_activity(activity_item)
+    def add_activity(activity_item, followers)
       redis_add "global:activity", activity_item
-      redis_add "user:id:#{activity_item[:actor][:actor_id]}:activity", activity_item
+      add_activity_to_user(activity_item, activity_item[:actor][:actor_id])
+      add_activity_to_followers(activity_item, followers) if followers.any?
+    end
+
+    def add_activity_to_user(activity_item, user_id)
+      redis_add "user:id:#{user_id}:activity", activity_item
+    end
+
+    def add_activity_to_followers(activity_item, followers)
+      followers.each { |follower| add_activity_to_user(activity_item, follower.id) }
     end
 
     def redis_add(list, activity_item)
       Timeline.redis.lpush list, Timeline.encode(activity_item)
     end
 
-    def options_for_target(target)
+    def options_for(target)
       if !target.nil?
         {
           id: target.id,
           class: target.class.to_s,
-          url: target.to_param,
           display_name: target.to_s
         }
       else
