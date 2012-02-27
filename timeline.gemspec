@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Redis backed timeline for your activity feeds."
   s.description = ""
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "activesupport", "~>3.2"
