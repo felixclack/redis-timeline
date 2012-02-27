@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib timeline]))
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib redis-timeline]))
 dir = File.dirname(File.expand_path(__FILE__))
 
 RSpec.configure do |config|

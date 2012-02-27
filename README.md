@@ -33,6 +33,7 @@ You can specify these options explicity...
         on: :update,
         actor: :author,
         target: :post,
+        object: [:body]
         followers: :post_participants
 
       delegate :participants, to: :post, prefix: true

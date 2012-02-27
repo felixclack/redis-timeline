@@ -34,14 +34,15 @@ class Comment
   extend ActiveModel::Callbacks
 
   define_model_callbacks :create
-  attr_accessor :id, :creator_id
+  attr_accessor :id, :creator_id, :body
 
   include Timeline::Track
 
-  track :new_comment, extra_fields: [:post_name, :post_id]
+  track :new_comment, object: [:post_name, :post_id, :body], mentionable: :body
 
   def initialize(options={})
     @creator_id = options.delete :creator_id
+    @body = options.delete :body
   end
 
   def save
@@ -68,22 +69,28 @@ end
 
 class User
   include Timeline::Actor
-  attr_accessor :id, :to_param
+  attr_accessor :id, :to_param, :username
 
   def initialize(options={})
     @id = options.delete :id
+    @username = options.delete :username
   end
 
   class << self
     def find user_id
       User.new(id: user_id)
     end
+
+    def find_by_username username
+      User.new(username: username)
+    end
   end
 end
 
 describe Timeline::Track do
-  let(:creator) { User.new(id: 1) }
+  let(:creator) { User.new(id: 1, username: "first_user") }
   let(:post) { Post.new(creator_id: creator.id, name: "New post") }
+  let(:comment) { Comment.new(creator_id: creator.id, id: 1) }
 
   describe "included in an ActiveModel-compliant class" do
     it "tracks on create by default" do
@@ -116,11 +123,17 @@ describe Timeline::Track do
   end
 
   describe "with extra_fields" do
-    let(:comment) { Comment.new(creator_id: creator.id, id: 1) }
-
     it "stores the extra fields in the timeline" do
       comment.save
-      creator.timeline.first.should respond_to :post_id
+      creator.timeline.first.object.should respond_to :post_id
+    end
+  end
+
+  describe "tracking mentions" do
+    it "adds to a user's mentions timeline" do
+      User.stub(:find_by_username).and_return(creator)
+      Comment.new(creator_id: creator.id, body: "@first_user should see this").save
+      creator.timeline(:mentions).first.object.body.should == "@first_user should see this"
     end
   end
 end

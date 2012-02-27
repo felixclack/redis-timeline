@@ -23,6 +23,8 @@ module Timeline::Actor
             defaults.merge!(list_name: "global:activity")
           when :posts
             defaults.merge!(list_name: "user:id:#{self.id}:posts")
+          when :mentions
+            defaults.merge!(list_name: "user:id:#{self.id}:mentions")
           end
         end
       end
