@@ -21,6 +21,8 @@ module Timeline::Actor
           case options
           when :global
             defaults.merge!(list_name: "global:activity")
+          when :posts
+            defaults.merge!(list_name: "user:id:#{self.id}:posts")
           end
         end
       end

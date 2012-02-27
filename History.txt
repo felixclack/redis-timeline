@@ -1,6 +1,7 @@
 == 0.1.4 / 2012-02-28
 
 * fix bug in extra fields
+* add activity to user's posts timeline
 
 == 0.1.3 / 2012-02-28
 

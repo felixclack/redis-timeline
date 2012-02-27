@@ -45,21 +45,21 @@ module Timeline::Track
 
     def add_activity(activity_item, followers)
       redis_add "global:activity", activity_item
-      add_activity_to_user(activity_item, activity_item[:actor][:id])
-      add_activity_to_user_post(activity_item, activity_item[:actor][:id])
-      add_activity_to_followers(activity_item, followers) if followers.any?
+      add_activity_to_user(activity_item[:actor][:id], activity_item)
+      add_activity_by_user(activity_item[:actor][:id], activity_item)
+      add_activity_to_followers(followers, activity_item) if followers.any?
     end
 
-    def add_activity_to_user(activity_item, user_id)
+    def add_activity_to_user(user_id, activity_item)
       redis_add "user:id:#{user_id}:activity", activity_item
     end
 
-    def add_activity_to_user_post(activity_item, user_id)
+    def add_activity_by_user(user_id, activity_item)
       redis_add "user:id:#{user_id}:posts", activity_item
     end
 
-    def add_activity_to_followers(activity_item, followers)
-      followers.each { |follower| add_activity_to_user(activity_item, follower.id) }
+    def add_activity_to_followers(followers, activity_item)
+      followers.each { |follower| add_activity_to_user(follower.id, activity_item) }
     end
 
     def add_extra_fields(extra_fields)
