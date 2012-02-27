@@ -1,3 +1,7 @@
+== 0.1.4 / 2012-02-28
+
+* fix bug in extra fields
+
 == 0.1.3 / 2012-02-28
 
 * Accept :extra_fields as an option for track, to cache extra fields on the timeline post.

@@ -65,7 +65,7 @@ module Timeline::Track
     def add_extra_fields(extra_fields)
       if extra_fields.any?
         extra_fields.inject({}) do |sum, value|
-          sum = send value.to_sym
+          sum[value.to_sym] = send value.to_sym
         end
       else
         {}
