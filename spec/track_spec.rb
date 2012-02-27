@@ -30,6 +30,42 @@ class Post
   end
 end
 
+class Comment
+  extend ActiveModel::Callbacks
+
+  define_model_callbacks :create
+  attr_accessor :id, :creator_id
+
+  include Timeline::Track
+
+  track :new_comment, extra_fields: [:post_name, :post_id]
+
+  def initialize(options={})
+    @creator_id = options.delete :creator_id
+  end
+
+  def save
+    run_callbacks :create
+    true
+  end
+
+  def post_id
+    1
+  end
+
+  def post_name
+    "My Post"
+  end
+
+  def creator
+    User.find(creator_id)
+  end
+
+  def to_s
+    "Comment"
+  end
+end
+
 class User
   include Timeline::Actor
   attr_accessor :id, :to_param
@@ -76,6 +112,15 @@ describe Timeline::Track do
       post.save
       follower.timeline.last.verb.should == "new_post"
       follower.timeline.last.actor.id.should == 1
+    end
+  end
+
+  describe "with extra_fields" do
+    let(:comment) { Comment.new(creator_id: creator.id, id: 1) }
+
+    it "stores the extra fields in the timeline" do
+      comment.save
+      creator.timeline.first.should respond_to :post_id
     end
   end
 end

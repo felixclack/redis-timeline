@@ -63,10 +63,12 @@ module Timeline::Track
     end
 
     def add_extra_fields(extra_fields)
-      if extra_fields.any?
-        extra_fields.inject({}) do |sum, value|
-          sum[value.to_sym] = send value.to_sym
+      if !extra_fields.nil? and extra_fields.any?
+        extras = {}
+        extra_fields.each do |value|
+          extras[value] = send(value)
         end
+        extras
       else
         {}
       end
