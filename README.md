@@ -1,4 +1,4 @@
-timeline
+redis-timeline
 ===========
 
 Redis backed timelines in your app.
@@ -97,11 +97,11 @@ Install redis.
 
 Add to your Gemfile:
 
-    gem 'timeline'
+    gem 'redis-timeline'
 
 Or install it by hand:
 
-    gem install timeline
+    gem install redis-timeline
 
 Setup your redis instance. For a Rails app, something like this...
 
