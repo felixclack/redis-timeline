@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "activesupport", "~>3.2"
+  s.add_dependency "activemodel", "~>3.2"
   s.add_dependency "multi_json"
   s.add_dependency "redis"
   s.add_dependency "hashie"
