@@ -61,6 +61,12 @@ The rest all fit neatly in an options hash.
 * `target:` [related to the `:object` method above. In the example this is the post related to the comment]
   default: nil
 
+* `followers:` [who should see this story in their timeline. This references a method on the actor]
+  Defaults to the method `followers` defined by Timeline::Actor.
+
+* `extra_fields:` [accepts an array of method names that you would like to cache the value of in your timeline]
+  Defaults to nil.
+
 * `if:` symbol or proc/lambda lets you put conditions on when to track.
 
 Display a timeline
