@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    timeline (0.1.4)
+    redis-timeline (0.1.6)
       activemodel (~> 3.2)
       activesupport (~> 3.2)
       hashie
@@ -11,16 +11,16 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (3.2.1)
-      activesupport (= 3.2.1)
+    activemodel (3.2.3)
+      activesupport (= 3.2.3)
       builder (~> 3.0.0)
-    activesupport (3.2.1)
+    activesupport (3.2.3)
       i18n (~> 0.6)
       multi_json (~> 1.0)
     builder (3.0.0)
     hashie (1.2.0)
     i18n (0.6.0)
-    multi_json (1.1.0)
+    multi_json (1.3.4)
     redis (2.2.2)
     sqlite3 (1.3.5)
 
@@ -28,5 +28,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  redis-timeline!
   sqlite3
-  timeline!

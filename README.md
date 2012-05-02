@@ -68,6 +68,10 @@ The rest all fit neatly in an options hash.
 * `extra_fields:` [accepts an array of method names that you would like to cache the value of in your timeline]
   Defaults to nil.
 
+* `merge_similar:` [allow merge similar feed as one]
+  For example, user upload some photos use multi uploader feature, you may need only on feed in timeline, so you need turn this on, then merged item will fix `object` as an Array type.
+  Default: false
+
 * `if:` symbol or proc/lambda lets you put conditions on when to track.
 
 Display a timeline

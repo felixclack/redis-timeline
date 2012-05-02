@@ -23,7 +23,7 @@ end
 class Comment < ActiveRecord::Base
   include Timeline::Track
 
-  track :new_comment, :actor => :user, object: [:post_title, :post_id, :body], mentionable: :body
+  track :new_comment, :actor => :user, object: [:post_title, :post_id, :body], mentionable: :body, :merge_similar => true
 
   belongs_to :post
   belongs_to :user

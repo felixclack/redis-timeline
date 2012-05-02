@@ -46,4 +46,24 @@ describe Timeline::Track do
       user.timeline(:mentions).first.object.body.should == "@first_user should see this"
     end
   end
+
+  describe "tracking merge similar items" do
+    it "should merged" do
+      c1 = Comment.create(:user => user, :body => "Comment for merge 1")
+      c2 = Comment.create(:user => user, :body => "Comment for merge 2")
+      user.timeline(:posts).first.object.class.should == [].class
+      user.timeline(:posts).first.object.count.should == 2
+      # should not merged affect other user
+      user2 = User.create(:username => "user 2")
+      Comment.create(:user => user2, :body => "Comment 3")
+      user.timeline(:posts).first.object.count.should == 2
+      user2.timeline(:posts).first.object.class.should_not == [].class
+      # should not merge with added other verbs
+      c3 = Comment.create(:user => user, :body => "Comment for merge 3")
+      user.timeline(:posts).first.object.count.should == 3
+      p1 = Post.create(:user => user, :title => "Post 1")
+      c4 = Comment.create(:user => user, :body => "Comment for not merge")
+      user.timeline(:posts).first.object.class.should_not == [].class
+    end
+  end
 end
