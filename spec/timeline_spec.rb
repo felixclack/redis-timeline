@@ -5,7 +5,7 @@ describe Timeline do
   it("has a namespace, timeline") { Timeline.redis.namespace.should == "tmtest" }
 
   it "sets the namespace through a url-like string" do
-    Timeline.redis = 'localhost:9736/namespace'
+    Timeline.redis = 'localhost:6379/namespace'
     Timeline.redis.namespace.should == 'namespace'
   end
 end
