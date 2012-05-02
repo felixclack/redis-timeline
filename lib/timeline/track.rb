@@ -76,6 +76,7 @@ module Timeline::Track
       return unless @mentionable and @object.send(@mentionable)
       @object.send(@mentionable).scan(/@\w+/).each do |mention|
         if user = @actor.class.find_by_username(mention[1..-1])
+          add_activity_to_user(user.id, activity_item)
           add_mention_to_user(user.id, activity_item)
         end
       end
