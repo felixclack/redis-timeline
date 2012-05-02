@@ -30,7 +30,7 @@ module Timeline::Track
           @extra_fields ||= nil
           @followers = @actor.send(options[:followers].to_sym)
           @mentionable = options[:mentionable]
-          add_activity activity(verb: options[:verb])
+          add_activity(activity(verb: options[:verb]))
         end
       end
   end
@@ -38,6 +38,7 @@ module Timeline::Track
   protected
     def activity(options={})
       {
+        cache_key: "#{options[:verb]}_u#{@actor.id}_#{Time.now.to_i}",
         verb: options[:verb],
         actor: options_for(@actor),
         object: options_for(@object),
@@ -47,11 +48,16 @@ module Timeline::Track
     end
 
     def add_activity(activity_item)
-      redis_add "global:activity", activity_item
+      redis_store_item(activity_item)
+      add_activity_by_global(activity_item)
       add_activity_to_user(activity_item[:actor][:id], activity_item)
       add_activity_by_user(activity_item[:actor][:id], activity_item)
       add_mentions(activity_item)
       add_activity_to_followers(activity_item) if @followers.any?
+    end
+
+    def add_activity_by_global(activity_item)
+      redis_add "global:activity", activity_item
     end
 
     def add_activity_by_user(user_id, activity_item)
@@ -100,7 +106,11 @@ module Timeline::Track
     end
 
     def redis_add(list, activity_item)
-      Timeline.redis.lpush list, Timeline.encode(activity_item)
+      Timeline.redis.lpush list, activity_item[:cache_key]
+    end
+
+    def redis_store_item(activity_item)
+      Timeline.redis.set activity_item[:cache_key], Timeline.encode(activity_item)
     end
 
     def set_object(object)
