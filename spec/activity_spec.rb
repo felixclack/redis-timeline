@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), %w[spec_helper])
 
 describe Timeline::Activity do
   describe "initialized with json" do
-    let(:json) { MultiJson.encode({ id: "1", verb: "new_post"}) }
+    let(:json) { { id: "1", verb: "new_post"} }
 
     it "returns a Hashie-fied object" do
       Timeline::Activity.new(json).id.should == "1"
