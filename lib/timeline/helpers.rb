@@ -3,14 +3,14 @@ module Timeline
     class DecodeException < StandardError; end
 
     def encode(object)
-      ::MultiJson.encode(object)
+      ::MultiJson.dump(object)
     end
 
     def decode(object)
       return unless object
 
       begin
-        ::MultiJson.decode(object)
+        ::MultiJson.load(object)
       rescue ::MultiJson::DecodeError => e
         raise DecodeException, e
       end
