@@ -49,10 +49,12 @@ describe Timeline::Track do
 
   describe "tracking merge similar items" do
     it "should merged" do
+      user.timeline(:posts).count.should == 0
       c1 = Comment.create(:user => user, :body => "Comment for merge 1")
       c2 = Comment.create(:user => user, :body => "Comment for merge 2")
       user.timeline(:posts).first.object.class.should == [].class
       user.timeline(:posts).first.object.count.should == 2
+      user.timeline(:posts).count.should == 1
       # should not merged affect other user
       user2 = User.create(:username => "user 2")
       Comment.create(:user => user2, :body => "Comment 3")

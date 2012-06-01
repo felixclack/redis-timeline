@@ -15,11 +15,11 @@ module Timeline::Track
       @mentionable = options.delete :mentionable
 
       method_name = "track_#{@name}_after_#{@callback}".to_sym
-      define_activity_method method_name, actor: @actor, 
-                                          object: @object, 
-                                          target: @target, 
-                                          followers: @followers, 
-                                          verb: name, 
+      define_activity_method method_name, actor: @actor,
+                                          object: @object,
+                                          target: @target,
+                                          followers: @followers,
+                                          verb: name,
                                           merge_similar: options[:merge_similar],
                                           mentionable: @mentionable
 
@@ -45,7 +45,7 @@ module Timeline::Track
   protected
     def activity(options={})
       {
-        cache_key: "#{options[:verb]}_u#{@actor.id}_#{Time.now.to_i}",
+        cache_key: "#{options[:verb]}_u#{@actor.id}_o#{@object.id}_#{Time.now.to_i}",
         verb: options[:verb],
         actor: options_for(@actor),
         object: options_for(@object),
@@ -125,6 +125,8 @@ module Timeline::Track
           if last_item[:verb].to_s == activity_item[:verb].to_s and last_item[:target] == activity_item[:target]
             activity_item[:object] = [last_item[:object], activity_item[:object]].flatten.uniq
           end
+          # Remove last similar item, it will merge to new item
+          Timeline.redis.del last_item[:cache_key]
         end
       end
       Timeline.redis.set activity_item[:cache_key], Timeline.encode(activity_item)

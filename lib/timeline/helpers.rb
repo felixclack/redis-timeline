@@ -29,7 +29,9 @@ module Timeline
     def get_list(options={})
       keys = Timeline.redis.lrange options[:list_name], options[:start], options[:end]
       return [] if keys.blank?
-      Timeline.redis.mget(*keys)
+      items = Timeline.redis.mget(*keys)
+      items.delete(nil)
+      items
     end
   end
 end
