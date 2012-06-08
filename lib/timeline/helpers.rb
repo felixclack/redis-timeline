@@ -10,7 +10,7 @@ module Timeline
       return unless object
 
       begin
-        ::MultiJson.decode(object)
+        ::MultiJson.load(object)
       rescue ::MultiJson::DecodeError => e
         raise DecodeException, e
       end

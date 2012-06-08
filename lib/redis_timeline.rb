@@ -1,4 +1,4 @@
-require 'active_support'
+require 'active_support/concern'
 require 'multi_json'
 require 'hashie'
 require 'timeline/config'
