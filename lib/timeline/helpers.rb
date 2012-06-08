@@ -3,7 +3,7 @@ module Timeline
     class DecodeException < StandardError; end
 
     def encode(object)
-      ::MultiJson.encode(object)
+      ::MultiJson.dump(object)
     end
 
     def decode(object)
