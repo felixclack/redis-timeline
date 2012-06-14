@@ -27,7 +27,7 @@ module Timeline
       when Redis::Namespace
         @redis = server
       else
-        @redis = Redis::Namespace.new(:resque, :redis => server)
+        @redis = Redis::Namespace.new(:timeline, :redis => server)
       end
     end
 
