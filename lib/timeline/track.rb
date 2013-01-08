@@ -1,3 +1,5 @@
+require 'SecureRandom'
+
 module Timeline::Track
   extend ActiveSupport::Concern
 
@@ -38,6 +40,7 @@ module Timeline::Track
   protected
     def activity(options={})
       {
+        cache_key: unique_key,
         verb: options[:verb],
         actor: options_for(@actor),
         object: options_for(@object),
@@ -47,11 +50,16 @@ module Timeline::Track
     end
 
     def add_activity(activity_item)
-      redis_add "global:activity", activity_item
+      redis_store_item(activity_item)
+      add_activity_to_global(activity_item)
       add_activity_to_user(activity_item[:actor][:id], activity_item)
       add_activity_by_user(activity_item[:actor][:id], activity_item)
       add_mentions(activity_item)
       add_activity_to_followers(activity_item) if @followers.any?
+    end
+
+    def add_activity_to_global(activity_item)
+      redis_add "global:activity", activity_item
     end
 
     def add_activity_by_user(user_id, activity_item)
@@ -100,7 +108,11 @@ module Timeline::Track
     end
 
     def redis_add(list, activity_item)
-      Timeline.redis.lpush list, Timeline.encode(activity_item)
+      Timeline.redis.lpush list, activity_item[:cache_key]
+    end
+
+    def redis_store_item(activity_item)
+      Timeline.redis.set activity_item[:cache_key], Timeline.encode(activity_item)
     end
 
     def set_object(object)
@@ -113,6 +125,10 @@ module Timeline::Track
       else
         self
       end
+    end
+
+    def unique_key
+      "u#{@actor.id}_o#{@object.id}_#{SecureRandom.uuid}"
     end
 
 end
