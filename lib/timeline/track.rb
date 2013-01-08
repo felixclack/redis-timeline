@@ -3,6 +3,8 @@ require 'SecureRandom'
 module Timeline::Track
   extend ActiveSupport::Concern
 
+  GLOBAL_ITEM = :global_activity_item
+
   module ClassMethods
     def track(name, options={})
       @name = name
@@ -112,7 +114,7 @@ module Timeline::Track
     end
 
     def redis_store_item(activity_item)
-      Timeline.redis.set activity_item[:cache_key], Timeline.encode(activity_item)
+      Timeline.redis.hset GLOBAL_ITEM, activity_item[:cache_key], Timeline.encode(activity_item)
     end
 
     def set_object(object)

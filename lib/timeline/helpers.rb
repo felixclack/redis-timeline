@@ -19,7 +19,7 @@ module Timeline
     def get_list(options={})
       keys = Timeline.redis.lrange options[:list_name], options[:start], options[:end]
       return [] if keys.empty?
-      Timeline.redis.mget(*keys)
+      Timeline.redis.hmget(Timeline::Track::GLOBAL_ITEM, *keys)
     end
   end
 end
