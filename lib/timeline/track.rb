@@ -7,21 +7,21 @@ module Timeline::Track
 
   module ClassMethods
     def track(name, options={})
-      @name = name
-      @callback = options.delete :on
-      @callback ||= :create
-      @actor = options.delete :actor
-      @actor ||= :creator
-      @object = options.delete :object
-      @target = options.delete :target
-      @followers = options.delete :followers
-      @followers ||= :followers
-      @mentionable = options.delete :mentionable
+      name = name
+      callback = options.delete :on
+      callback ||= :create
+      actor = options.delete :actor
+      actor ||= :creator
+      object = options.delete :object
+      target = options.delete :target
+      followers = options.delete :followers
+      followers ||= :followers
+      mentionable = options.delete :mentionable
 
-      method_name = "track_#{@name}_after_#{@callback}".to_sym
-      define_activity_method method_name, actor: @actor, object: @object, target: @target, followers: @followers, verb: name, mentionable: @mentionable
+      method_name = "track_#{name}_after_#{callback}".to_sym
+      define_activity_method method_name, actor: actor, object: object, target: target, followers: followers, verb: name, mentionable: mentionable
 
-      send "after_#{@callback}".to_sym, method_name, if: options.delete(:if)
+      send "after_#{callback}".to_sym, method_name, if: options.delete(:if)
     end
 
     private
