@@ -3,6 +3,11 @@ redis-timeline
 
 Redis backed timelines in your app.
 
+<a href="mailto:felixclack+pairwithme@gmail.com" title="Pair program with me!">
+  <img src="http://pairprogramwith.me/badge.png"
+        alt="Pair program with me!" />
+</a>
+
 Features
 --------
 
