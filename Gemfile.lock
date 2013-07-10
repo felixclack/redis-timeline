@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    redis_timeline (0.1.6)
-      activemodel (~> 4.0.0.rc1)
-      activesupport (~> 4.0.0.rc1)
+    redis_timeline (0.2)
+      activemodel (~> 4.0.0)
+      activesupport (~> 4.0.0)
       hashie
       multi_json
       redis
@@ -12,16 +12,16 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (4.0.0.rc2)
-      activesupport (= 4.0.0.rc2)
+    activemodel (4.0.0)
+      activesupport (= 4.0.0)
       builder (~> 3.1.0)
-    activesupport (4.0.0.rc2)
+    activesupport (4.0.0)
       i18n (~> 0.6, >= 0.6.4)
       minitest (~> 4.2)
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
-    atomic (1.1.9)
+    atomic (1.1.10)
     builder (3.1.4)
     diff-lcs (1.1.3)
     hashie (2.0.5)

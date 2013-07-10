@@ -1,10 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib redis_timeline]))
 dir = File.dirname(File.expand_path(__FILE__))
 
-RSpec.configure do |config|
-
-end
-
 #
 # make sure we can run redis
 #
@@ -14,7 +10,6 @@ if !system("which redis-server")
   puts "** try running `sudo rake install`"
   abort ''
 end
-
 
 #
 # start our own redis when the tests start,
