@@ -1,6 +1,8 @@
 redis-timeline
 ===========
 
+[![Build Status](https://travis-ci.org/felixclack/redis-timeline.png?branch=master)](https://travis-ci.org/felixclack/redis-timeline)
+
 Redis backed timelines in your app.
 
 <a href="mailto:felixclack+pairwithme@gmail.com" title="Pair program with me!">
@@ -22,7 +24,6 @@ The simple way...
       include Timeline::Track
 
       track :new_post
-
     end
 
 By default, track fires in the `after_create` callback of your model and uses `self` as the object and `creator` as the actor.
@@ -35,11 +36,11 @@ You can specify these options explicity...
       belongs_to :post
 
       track :new_comment,
-        on: :update,
         actor: :author,
-        target: :post,
-        object: [:body]
-        followers: :post_participants
+        followers: :post_participants,
+        object: [:body],
+        on: :update,
+        target: :post
 
       delegate :participants, to: :post, prefix: true
     end
