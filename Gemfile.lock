@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    redis_timeline (0.2)
-      activemodel (~> 4.0.0)
-      activesupport (~> 4.0.0)
+    redis_timeline (0.2.1)
+      activemodel (> 4.0)
+      activesupport (> 4.0)
       hashie
       multi_json
       rake
@@ -13,26 +13,26 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (4.0.0)
-      activesupport (= 4.0.0)
-      builder (~> 3.1.0)
-    activesupport (4.0.0)
-      i18n (~> 0.6, >= 0.6.4)
-      minitest (~> 4.2)
-      multi_json (~> 1.3)
+    activemodel (4.1.0)
+      activesupport (= 4.1.0)
+      builder (~> 3.1)
+    activesupport (4.1.0)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
       thread_safe (~> 0.1)
-      tzinfo (~> 0.3.37)
-    atomic (1.1.10)
-    builder (3.1.4)
+      tzinfo (~> 1.1)
+    builder (3.2.2)
     diff-lcs (1.1.3)
-    hashie (2.0.5)
-    i18n (0.6.4)
-    minitest (4.7.5)
-    multi_json (1.7.7)
-    rake (10.0.4)
-    redis (3.0.4)
-    redis-namespace (1.3.0)
-      redis (~> 3.0.0)
+    hashie (2.1.0)
+    i18n (0.6.9)
+    json (1.8.1)
+    minitest (5.3.2)
+    multi_json (1.9.2)
+    rake (10.2.2)
+    redis (3.0.7)
+    redis-namespace (1.4.1)
+      redis (~> 3.0.4)
     rspec (2.10.0)
       rspec-core (~> 2.10.0)
       rspec-expectations (~> 2.10.0)
@@ -42,9 +42,9 @@ GEM
       diff-lcs (~> 1.1.3)
     rspec-mocks (2.10.1)
     sqlite3 (1.3.5)
-    thread_safe (0.1.0)
-      atomic
-    tzinfo (0.3.37)
+    thread_safe (0.3.3)
+    tzinfo (1.1.0)
+      thread_safe (~> 0.1)
 
 PLATFORMS
   ruby
