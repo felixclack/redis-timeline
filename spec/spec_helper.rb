@@ -19,7 +19,7 @@ end
 at_exit do
   next if $!
 
-  exit_code = RSpec::Runner.autorun
+  exit_code = RSpec::Core::Runner.autorun
 
   pid = `ps -A -o pid,command | grep [r]edis-test`.split(" ")[0]
   puts "Killing test redis server..."

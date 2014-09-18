@@ -11,7 +11,7 @@ describe Timeline::Actor do
     before { @user = User.new }
 
     it "defines a timeline association" do
-      @user.should respond_to :timeline
+      expect(@user).to respond_to :timeline
     end
 
     describe ".timeline" do
