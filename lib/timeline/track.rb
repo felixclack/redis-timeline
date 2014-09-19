@@ -1,23 +1,27 @@
+require 'SecureRandom'
+
 module Timeline::Track
   extend ActiveSupport::Concern
 
+  GLOBAL_ITEM = :global_activity_item
+
   module ClassMethods
     def track(name, options={})
-      @name = name
-      @callback = options.delete :on
-      @callback ||= :create
-      @actor = options.delete :actor
-      @actor ||= :creator
-      @object = options.delete :object
-      @target = options.delete :target
-      @followers = options.delete :followers
-      @followers ||= :followers
-      @mentionable = options.delete :mentionable
+      name = name
+      callback = options.delete :on
+      callback ||= :create
+      actor = options.delete :actor
+      actor ||= :creator
+      object = options.delete :object
+      target = options.delete :target
+      followers = options.delete :followers
+      followers ||= :followers
+      mentionable = options.delete :mentionable
 
-      method_name = "track_#{@name}_after_#{@callback}".to_sym
-      define_activity_method method_name, actor: @actor, object: @object, target: @target, followers: @followers, verb: name, mentionable: @mentionable
+      method_name = "track_#{name}_after_#{callback}".to_sym
+      define_activity_method method_name, actor: actor, object: object, target: target, followers: followers, verb: name, mentionable: mentionable
 
-      send "after_#{@callback}".to_sym, method_name, if: options.delete(:if)
+      send "after_#{callback}".to_sym, method_name, if: options.delete(:if)
     end
 
     private
@@ -38,6 +42,7 @@ module Timeline::Track
   protected
     def activity(options={})
       {
+        cache_key: unique_key,
         verb: options[:verb],
         actor: options_for(@actor),
         object: options_for(@object),
@@ -47,11 +52,16 @@ module Timeline::Track
     end
 
     def add_activity(activity_item)
-      redis_add "global:activity", activity_item
+      redis_store_item(activity_item)
+      add_activity_to_global(activity_item)
       add_activity_to_user(activity_item[:actor][:id], activity_item)
       add_activity_by_user(activity_item[:actor][:id], activity_item)
       add_mentions(activity_item)
       add_activity_to_followers(activity_item) if @followers.any?
+    end
+
+    def add_activity_to_global(activity_item)
+      redis_add "global:activity", activity_item
     end
 
     def add_activity_by_user(user_id, activity_item)
@@ -100,7 +110,11 @@ module Timeline::Track
     end
 
     def redis_add(list, activity_item)
-      Timeline.redis.lpush list, Timeline.encode(activity_item)
+      Timeline.redis.lpush list, activity_item[:cache_key]
+    end
+
+    def redis_store_item(activity_item)
+      Timeline.redis.hset GLOBAL_ITEM, activity_item[:cache_key], Timeline.encode(activity_item)
     end
 
     def set_object(object)
@@ -113,6 +127,10 @@ module Timeline::Track
       else
         self
       end
+    end
+
+    def unique_key
+      "u#{@actor.id}_o#{@object.id}_#{SecureRandom.uuid}"
     end
 
 end
