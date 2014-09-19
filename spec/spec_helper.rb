@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib redis_timeline]))
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib redis-timeline]))
 dir = File.dirname(File.expand_path(__FILE__))
 
 #
@@ -19,7 +19,7 @@ end
 at_exit do
   next if $!
 
-  exit_code = RSpec::Runner.autorun
+  exit_code = RSpec::Core::Runner.autorun
 
   pid = `ps -A -o pid,command | grep [r]edis-test`.split(" ")[0]
   puts "Killing test redis server..."
